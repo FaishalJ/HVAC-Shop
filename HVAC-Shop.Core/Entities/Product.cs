@@ -1,4 +1,4 @@
-﻿namespace HVAC_Shop.Core.Entities
+﻿namespace Core.Entities
 {
 	public class Product
 	{
@@ -11,5 +11,7 @@
 		public required string Brand { get; set; }
 		public int QuantityInStock { get; set; }
 		public string? PublicId { get; set; }
-	}
+
+        public List<BasketItem> Items { get; set; } = [];
+    }
 }

@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "HVAC-Shop.Infrastructure\Infrastructure.csproj", "{FE2BA1C5-2A9A-4EF3-8CAE-6D85B24699BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HVAC-Shop.Core", "HVAC-Shop.Core\HVAC-Shop.Core.csproj", "{387ECE23-D240-4250-8F9B-362FF521A01F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "HVAC-Shop.Core\Core.csproj", "{387ECE23-D240-4250-8F9B-362FF521A01F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

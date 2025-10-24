@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HVAC-Shop.Core\HVAC-Shop.Core.csproj" />
+    <ProjectReference Include="..\HVAC-Shop.Core\Core.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 using Infrastructure;
 using HVAC_Shop.StartUp;
 using Scalar.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,8 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-    await context.Database.EnsureCreatedAsync();
+    await context.Database.MigrateAsync();
+    //await context.Database.EnsureCreatedAsync();
 }
 
 

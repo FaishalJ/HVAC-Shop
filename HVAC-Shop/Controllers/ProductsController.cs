@@ -1,4 +1,4 @@
-﻿using HVAC_Shop.Core.Entities;
+﻿using Core.Entities;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
