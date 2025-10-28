@@ -14,6 +14,7 @@
             {
                 throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
             }
+
             var existingItem = FindItem(product.Id);
 
             if (existingItem == null)

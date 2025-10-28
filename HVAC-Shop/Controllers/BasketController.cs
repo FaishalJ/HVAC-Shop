@@ -1,4 +1,6 @@
 ﻿using Core.Entities;
+using HVAC_Shop.Core.DTO;
+using HVAC_Shop.Core.Extensions;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,12 +12,12 @@ namespace HVAC_Shop.Controllers
         const string BasketSessionKey = "BasketId";
 
         [HttpGet]
-        public async Task<ActionResult> GetBasket()
+        public async Task<ActionResult<BasketDTO>> GetBasket()
         {
             var basket = await RetriveBasket();
             if (basket == null) return NoContent();
 
-            return Ok(basket);
+            return basket.ToBasketDto();
         }
 
         [HttpPost]
@@ -25,11 +27,28 @@ namespace HVAC_Shop.Controllers
             basket ??= CreateBasket();
 
             var product = await context.Products.FindAsync(productId);
-            if (product == null) return NotFound();
+            if (product == null) return BadRequest("Problem adding item to basket productId");
+
             basket.AddItem(product, quantity);
             var result = await context.SaveChangesAsync() > 0;
 
-            if (result) return CreatedAtAction(nameof(GetBasket), basket);
+            if (result) return CreatedAtAction(nameof(GetBasket), basket.ToBasketDto());
+
+            return BadRequest("Problem adding item to basket");
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult> DeleItems(int productId, int quantity)
+        {
+            var basket = await RetriveBasket();
+
+            if (basket == null) return BadRequest("Problem deleting item basket not found");
+
+            basket.RemoveItem(productId, quantity);
+
+            var result = await context.SaveChangesAsync() > 0;
+
+            if (result) return NoContent();
 
             return BadRequest("Problem adding item to basket");
         }
