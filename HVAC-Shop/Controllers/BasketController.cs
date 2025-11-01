@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿using HVAC_Shop.Core.Domain.Entities;
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Extensions;
 using Infrastructure;

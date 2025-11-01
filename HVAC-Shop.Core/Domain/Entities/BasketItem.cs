@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Core.Entities
+namespace HVAC_Shop.Core.Domain.Entities
 {
     [Table("BasketItems")]
     public class BasketItem

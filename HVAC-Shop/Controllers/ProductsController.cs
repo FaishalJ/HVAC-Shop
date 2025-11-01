@@ -1,27 +1,26 @@
-﻿using Core.Entities;
-using Infrastructure;
+﻿using HVAC_Shop.Core.Domain.Entities;
+using HVAC_Shop.Core.Domain.RepositoryContracts;
+using HVAC_Shop.Core.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HVAC_Shop.Controllers
 {
-	public class ProductsController(AppDbContext context) : BaseController
+	public class ProductsController(IProductsRepository productsRepository) : BaseController
 	{
 		[HttpGet]
-		public async Task<ActionResult> GetAllProducts()
+		public async Task<ActionResult<List<Product>>> GetAllProducts([FromQuery] ProductQueryOptions options)
 		{
-			var products = await context.Products.ToListAsync();
-			return Ok(products);
+			return await productsRepository.GetAllProducts(options);
 		}
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
-        {
-            var product = await context.Products.FindAsync(id);
+   //     [HttpGet("{id}")]
+   //     public async Task<ActionResult<Product>> GetProduct(int id)
+   //     {
+   //         var product = await context.Products.FindAsync(id);
 
-			if (product == null) return NotFound();
+			//if (product == null) return NotFound();
 
-			return product;
-        }
+			//return product;
+   //     }
     }
 }

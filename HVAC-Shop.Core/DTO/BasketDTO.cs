@@ -1,6 +1,4 @@
-﻿
-
-namespace HVAC_Shop.Core.DTO
+﻿namespace HVAC_Shop.Core.DTO
 { 
     public class BasketDTO
     {

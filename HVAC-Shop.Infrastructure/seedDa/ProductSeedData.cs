@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿using HVAC_Shop.Core.Domain.Entities;
 
 namespace Infrastructure.seedData
 {

@@ -1,4 +1,6 @@
-﻿using HVAC_Shop.Middleware;
+﻿using HVAC_Shop.Core.Domain.RepositoryContracts;
+using HVAC_Shop.Infrastructure.Repository;
+using HVAC_Shop.Middleware;
 
 namespace HVAC_Shop.StartUp
 {
@@ -12,6 +14,9 @@ namespace HVAC_Shop.StartUp
 			// Exception.
 			builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 			builder.Services.AddProblemDetails();
+
+            // Repositories.
+			builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
         }
-	}
+    }
 }

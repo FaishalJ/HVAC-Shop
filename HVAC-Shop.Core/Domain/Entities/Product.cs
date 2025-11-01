@@ -1,4 +1,4 @@
-﻿namespace Core.Entities
+﻿namespace HVAC_Shop.Core.Domain.Entities
 {
 	public class Product
 	{

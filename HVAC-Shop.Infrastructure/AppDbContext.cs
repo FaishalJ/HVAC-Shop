@@ -1,5 +1,4 @@
-﻿
-using Core.Entities;
+﻿using HVAC_Shop.Core.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure
