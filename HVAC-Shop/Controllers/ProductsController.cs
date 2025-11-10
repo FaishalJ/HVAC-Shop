@@ -10,7 +10,22 @@ namespace HVAC_Shop.Controllers
 		[HttpGet]
 		public async Task<ActionResult<List<Product>>> GetAllProducts([FromQuery] ProductQueryOptions options)
 		{
-			return await productsRepository.GetAllProducts(options);
+			var result = await productsRepository.GetAllProducts(options);
+
+   //         var result = new PaginationResult<Product>
+			//{
+			//	PageNumber = options.PageNumber,
+			//	PageSize = options.PageSize,
+			//	TotalCount = products.Count,
+   //         };
+
+            Response.Headers.Append("X-Total-Count", result.TotalCount.ToString());
+            Response.Headers.Append("X-Page-Number", result.PageNumber.ToString());
+            Response.Headers.Append("X-Page-Size", result.PageSize.ToString());
+            Response.Headers.Append("X-Page-Count", result.PageCount.ToString());
+
+
+            return result.Items;
 		}
 
    //     [HttpGet("{id}")]

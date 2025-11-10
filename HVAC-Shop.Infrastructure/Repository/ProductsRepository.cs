@@ -8,7 +8,7 @@ namespace HVAC_Shop.Infrastructure.Repository
 {
     public class ProductsRepository(AppDbContext context) : IProductsRepository
     {
-        public async Task<List<Product>> GetAllProducts(ProductQueryOptions options)
+        public async Task<PaginationResult<Product>> GetAllProducts(ProductQueryOptions options)
         {
             var query = context.Products.AsQueryable();
 
@@ -24,6 +24,9 @@ namespace HVAC_Shop.Infrastructure.Repository
                 };
             }
 
+            // Total count before pagination
+            var totalCount = await query.CountAsync();
+
             // Sorting
             query = options.SortBy?.ToLower() switch
             {
@@ -32,8 +35,19 @@ namespace HVAC_Shop.Infrastructure.Repository
                 _ => query.OrderBy(p => p.Name)
             };
 
+            // Pagination
+            query = query
+                .Skip((options.PageNumber - 1) * options.PageSize)
+                .Take(options.PageSize);
 
-            return await query.ToListAsync();
+            return new PaginationResult<Product>
+            {
+                Items = await query.ToListAsync(),
+                TotalCount = totalCount,
+                PageNumber = options.PageNumber,
+                PageSize = options.PageSize
+            };
+
         }
     }
 }

@@ -5,6 +5,6 @@ namespace HVAC_Shop.Core.Domain.RepositoryContracts
 {
     public interface IProductsRepository
     {
-        Task<List<Product>> GetAllProducts(ProductQueryOptions options);
+        Task<PaginationResult<Product>> GetAllProducts(ProductQueryOptions options);
     }
 }
