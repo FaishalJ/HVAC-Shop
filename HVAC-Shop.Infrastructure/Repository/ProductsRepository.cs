@@ -1,13 +1,20 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
 using HVAC_Shop.Core.Domain.RepositoryContracts;
 using HVAC_Shop.Core.Helpers;
-using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace HVAC_Shop.Infrastructure.Repository
 {
     public class ProductsRepository(AppDbContext context) : IProductsRepository
     {
+        public Object Filter()
+        {
+            var type = context.Products.Select(x=>x.Type).Distinct();
+            var brand = context.Products.Select(x=>x.Brand).Distinct();
+
+            return new {Type = type, Brand = brand};
+        }
+
         public async Task<PaginationResult<Product>> GetAllProducts(ProductQueryOptions options)
         {
             var query = context.Products.AsQueryable();
@@ -47,7 +54,11 @@ namespace HVAC_Shop.Infrastructure.Repository
                 PageNumber = options.PageNumber,
                 PageSize = options.PageSize
             };
+        }
 
+        public async Task<Product?> GetProduct(int productId)
+        {
+            return await context.Products.FindAsync(productId);
         }
     }
 }

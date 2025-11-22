@@ -1,15 +1,19 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
+using HVAC_Shop.Core.Domain.IdentityEntities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure
+namespace HVAC_Shop.Infrastructure
 {
-	public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
-	{
-		public DbSet<Product> Products { get; set; }
-		public DbSet<Basket> Baskets { get; set; }
+    public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<User>(options)
+    {
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Basket> Baskets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<BasketItem>()
                 .HasOne(bi => bi.Product)
                 .WithMany(p => p.Items)
