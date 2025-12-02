@@ -9,7 +9,6 @@ namespace HVAC_Shop.Controllers
 	public class ProductsController(IProductsRepository productsRepository) : BaseController
 	{
 		[HttpGet]
-        [Authorize]
 		public async Task<ActionResult<List<Product>>> GetAllProducts([FromQuery] ProductQueryOptions options)
 		{
 			var result = await productsRepository.GetAllProducts(options);
@@ -23,7 +22,6 @@ namespace HVAC_Shop.Controllers
 		}
 
         [HttpGet("{id}")]
-        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             var product = await productsRepository.GetProduct(id);

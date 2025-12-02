@@ -1,4 +1,5 @@
 ﻿using HVAC_Shop.Core.Domain.IdentityEntities;
+using HVAC_Shop.Core.Enum;
 using Microsoft.AspNetCore.Identity;
 
 namespace HVAC_Shop.Infrastructure.seedDa
@@ -8,15 +9,15 @@ namespace HVAC_Shop.Infrastructure.seedDa
         public static async Task SeedUsers(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             // Create admin
-            if (!await roleManager.RoleExistsAsync("Admin"))
+            if (!await roleManager.RoleExistsAsync(UserRoles.Admin.ToString()))
             {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.Admin.ToString()));
             }
 
             // Create user
-            if (!await roleManager.RoleExistsAsync("User"))
+            if (!await roleManager.RoleExistsAsync(UserRoles.User.ToString()))
             {
-                await roleManager.CreateAsync(new IdentityRole("User"));
+                await roleManager.CreateAsync(new IdentityRole(UserRoles.User.ToString()));
             }
 
             // Seed User
@@ -28,7 +29,7 @@ namespace HVAC_Shop.Infrastructure.seedDa
                     Email = "jaffar@test.com"
                 };
                 await userManager.CreateAsync(normalUser, "Password@123");
-                await userManager.AddToRoleAsync(normalUser, "User");
+                await userManager.AddToRoleAsync(normalUser, UserRoles.User.ToString());
             }
 
             // Seed Admin
@@ -40,7 +41,7 @@ namespace HVAC_Shop.Infrastructure.seedDa
                     Email = "admin@test.com"
                 };
                 await userManager.CreateAsync(adminUser, "Password@123");
-                await userManager.AddToRoleAsync(adminUser, "Admin");
+                await userManager.AddToRoleAsync(adminUser, UserRoles.Admin.ToString());
             }
         }
     }

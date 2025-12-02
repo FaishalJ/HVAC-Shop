@@ -21,12 +21,7 @@ namespace HVAC_Shop.StartUp
             });
 
             // Authorization
-            //services.AddAuthorization(options =>
-            //{
-            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
-            //    .RequireAuthenticatedUser()
-            //    .Build();
-            //});
+            services.AddAuthorizationBuilder();
         }
     }
 }
