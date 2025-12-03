@@ -4,6 +4,7 @@ using HVAC_Shop.Core.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Reflection.Metadata.Ecma335;
 
 namespace HVAC_Shop.Controllers
 {
@@ -33,7 +34,6 @@ namespace HVAC_Shop.Controllers
                 return ValidationProblem();
             }
 
-            //await userManager.AddToRoleAsync(newUser, UserRoles.User.ToString());
             var roleResult = await userManager.AddToRoleAsync(newUser, UserRoles.User.ToString());
 
             if (!roleResult.Succeeded)

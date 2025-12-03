@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HVAC_Shop.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251201180156_Initial migration")]
+    [Migration("20251203174423_Initial migration")]
     partial class Initialmigration
     {
         /// <inheritdoc />
