@@ -1,10 +1,11 @@
-﻿using HVAC_Shop.Core.Domain.IdentityEntities;
+﻿using HVAC_Shop.Core.Domain.Entities;
+using HVAC_Shop.Core.Domain.IdentityEntities;
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Enum;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Reflection.Metadata.Ecma335;
+using Microsoft.EntityFrameworkCore;
 
 namespace HVAC_Shop.Controllers
 {
@@ -59,7 +60,7 @@ namespace HVAC_Shop.Controllers
             {
                 user.UserName,
                 user.Email,
-                Roles = string.Join(", ", roles),
+                Roles = roles
             });
         }
 
@@ -94,5 +95,84 @@ namespace HVAC_Shop.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPost("promote-to-admin/{email}")]
+        public async Task<ActionResult> PromoteToAdmin(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+                return NotFound("User not found.");
+
+            var result = await userManager.AddToRoleAsync(user, UserRoles.Admin.ToString());
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem();
+            }
+
+            return Ok($"{email} successfully promoted to admin");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("revoke-admin/{email}")]
+        public async Task<ActionResult> DemoteFromAdmin(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null)
+                return NotFound("User not found.");
+
+            var result = await userManager.RemoveFromRoleAsync(user, UserRoles.Admin.ToString());
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem();
+            }
+
+            return Ok($"{email} successfully removed from admin role");
+        }
+
+        [Authorize]
+        [HttpPost("address")]
+        public async Task<ActionResult> CreateOrUpdateAddress(Address address)
+        {
+            var user = await userManager.Users.Include(a => a.Address).FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
+
+            if (user == null)
+                return Unauthorized();
+
+            user.Address = address;
+
+            var result = await userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem();
+            }
+            return Ok(user.Address);
+        }
+
+        [Authorize]
+        [HttpGet("address")]
+        public async Task<ActionResult> GetAddress()
+        {
+            var address = await userManager.Users
+                .Where(x => x.UserName == User.Identity!.Name)
+                .Select(u => u.Address)
+                .FirstOrDefaultAsync();
+
+            if (address == null) return NoContent();
+
+            return Ok(address);
+        }
     }
 }

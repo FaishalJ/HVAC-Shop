@@ -1,7 +1,6 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
 using HVAC_Shop.Core.Domain.RepositoryContracts;
 using HVAC_Shop.Core.Helpers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HVAC_Shop.Controllers
