@@ -1,6 +1,9 @@
 ﻿using HVAC_Shop.Core.Domain.RepositoryContracts;
+using HVAC_Shop.Core.Helpers;
+using HVAC_Shop.Core.Services;
 using HVAC_Shop.Infrastructure.Repository;
 using HVAC_Shop.Middleware;
+
 
 namespace HVAC_Shop.StartUp
 {
@@ -20,6 +23,10 @@ namespace HVAC_Shop.StartUp
             
 			// Identity.
 			builder.Services.AddIdentityServices();
+
+			// stripeSerives
+			builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection(StripeOptions.SectionName));
+			builder.Services.AddScoped<PaymentService>();
         }
     }
 }

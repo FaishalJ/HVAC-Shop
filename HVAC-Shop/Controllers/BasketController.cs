@@ -2,6 +2,7 @@
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Extensions;
 using HVAC_Shop.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

@@ -10,6 +10,7 @@ namespace HVAC_Shop.Core.Extensions
             return new BasketDTO
             {
                 BasketId = basket.BasketId,
+                ClientSecret = basket.ClientSecret,
                 Items = basket.Items.Select(x => new BasketItemDto
                 {
                     ProductId = x.ProductId,
