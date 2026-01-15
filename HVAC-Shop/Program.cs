@@ -2,9 +2,7 @@ using HVAC_Shop.Core.Domain.IdentityEntities;
 using HVAC_Shop.Infrastructure;
 using HVAC_Shop.Infrastructure.seedDa;
 using HVAC_Shop.StartUp;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 

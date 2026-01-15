@@ -1,4 +1,5 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
+using HVAC_Shop.Core.Domain.Entities.OrderAggregate;
 using HVAC_Shop.Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ namespace HVAC_Shop.Infrastructure
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Basket> Baskets { get; set; }
+        public DbSet<Order> Orders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
