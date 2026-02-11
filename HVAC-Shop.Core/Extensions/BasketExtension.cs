@@ -5,12 +5,13 @@ namespace HVAC_Shop.Core.Extensions
 {
     public static class BasketToDtoExtention
     {
-        public static BasketDTO ToBasketDto(this Basket basket)
+        public static BasketDto ToBasketDto(this Basket basket)
         {
-            return new BasketDTO
+            return new BasketDto
             {
                 BasketId = basket.BasketId,
                 ClientSecret = basket.ClientSecret,
+                PaymentIntentId = basket.PaymentIntentId,
                 Items = basket.Items.Select(x => new BasketItemDto
                 {
                     ProductId = x.ProductId,

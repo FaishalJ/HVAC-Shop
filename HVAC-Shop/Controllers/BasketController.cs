@@ -13,7 +13,7 @@ namespace HVAC_Shop.Controllers
         const string BasketSessionKey = "BasketId";
 
         [HttpGet]
-        public async Task<ActionResult<BasketDTO>> GetBasket()
+        public async Task<ActionResult<BasketDto>> GetBasket()
         {
             var basket = await RetriveBasket();
             if (basket == null) return NoContent();

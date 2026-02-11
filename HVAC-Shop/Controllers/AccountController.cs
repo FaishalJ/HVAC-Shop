@@ -2,6 +2,7 @@
 using HVAC_Shop.Core.Domain.IdentityEntities;
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Enum;
+using HVAC_Shop.Core.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -139,12 +140,27 @@ namespace HVAC_Shop.Controllers
 
         [Authorize]
         [HttpPost("address")]
-        public async Task<ActionResult> CreateOrUpdateAddress(Address address)
+        public async Task<ActionResult> CreateOrUpdateAddress(UserAddressDto addressDto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var user = await userManager.Users.Include(a => a.Address).FirstOrDefaultAsync(x => x.UserName == User.Identity!.Name);
 
             if (user == null)
                 return Unauthorized();
+
+            var address = new Address
+            {
+                Id = addressDto.Id,
+                Name = addressDto.Name,
+                City = addressDto.City,
+                Country = addressDto.Country,
+                Line1 = addressDto.Line1,
+                Line2 = addressDto.Line2,
+                State = addressDto.State,
+                PostalCode = addressDto.PostalCode
+            };
 
             user.Address = address;
 
@@ -158,7 +174,7 @@ namespace HVAC_Shop.Controllers
                 }
                 return ValidationProblem();
             }
-            return Ok(user.Address);
+            return Ok(user.Address.ToDto());
         }
 
         [Authorize]
@@ -172,7 +188,7 @@ namespace HVAC_Shop.Controllers
 
             if (address == null) return NoContent();
 
-            return Ok(address);
+            return Ok(address.ToDto());
         }
     }
 }

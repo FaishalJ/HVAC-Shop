@@ -15,8 +15,10 @@ namespace HVAC_Shop.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAllOrders()
         {
-            var orders = await context.Orders
-                .Include(x => x.OrderItem).ToListAsync();
+            var orders = await context.Orders.Select(o=>o.ToOrderDto()).ToListAsync();
+
+            //var orders = await context.Orders.Select(o => o.ToOrderDto())
+            //    .Include(x => x.OrderItem).ToListAsync();
 
             return Ok(orders);
         }
@@ -24,12 +26,16 @@ namespace HVAC_Shop.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetOrder(int id)
         {
-            var orders = await context.Orders
-                .Include(x => x.OrderItem)
+            //var orders = await context.Orders
+            //    .Include(x => x.OrderItem)
+            //    .Where(x => x.BuyerEmail == User.GetName() && (x.Id == id))
+            //    .FirstOrDefaultAsync();
+
+            var order = await context.Orders.Select(o => o.ToOrderDto())
                 .Where(x => x.BuyerEmail == User.GetName() && (x.Id == id))
                 .FirstOrDefaultAsync();
 
-            return Ok(orders);
+            return Ok(order);
         }
 
         [HttpPost]
@@ -40,16 +46,16 @@ namespace HVAC_Shop.Controllers
                 .ThenInclude(x => x.Product)
                 .FirstOrDefaultAsync(x => x.BasketId == Request.Cookies["BasketId"]);
 
-            if (basket == null || basket.Items.Count < 0 || String.IsNullOrEmpty(basket.PaymentIntentId))
+            if (basket == null || basket.Items.Count == 0 || string.IsNullOrEmpty(basket.PaymentIntentId))
             {
                 return BadRequest("Basket is empty");
             }
 
             var orderItems = GetItems(basket.Items);
 
-            if(orderItems == null)
+            if (orderItems == null)
             {
-                return BadRequest("Your basket is empty");
+                return BadRequest("Your basket is missing some items");
             }
 
             var subtotal = orderItems.Sum(item => item.Price * item.Quantity);
@@ -63,22 +69,22 @@ namespace HVAC_Shop.Controllers
                 Subtotal = subtotal,
                 DeliveryFee = deliveryFee,
                 PaymentSummary = orderDto.PaymentSummary,
-                PaymentIntentId = basket.PaymentIntentId ?? string.Empty
+                PaymentIntentId = basket.PaymentIntentId
             };
             context.Orders.Add(order);
             context.Baskets.Remove(basket);
             var result = await context.SaveChangesAsync() > 0;
 
-            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+            return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order.ToOrderDto());
         }
 
         private static List<OrderItem>? GetItems(List<BasketItem> items)
         {
-            var orderItems = new List<OrderItem>();
+            List<OrderItem> orderItems = [];
 
             foreach (var item in items)
             {
-                if (item.Quantity < item.Product.QuantityInStock) return null;
+                if (item.Quantity > item.Product.QuantityInStock) return null;
 
                 var orderedProductItem = new OrderedProductItem
                 {

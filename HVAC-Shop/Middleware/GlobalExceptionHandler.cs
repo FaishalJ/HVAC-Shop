@@ -10,6 +10,7 @@ namespace HVAC_Shop.Middleware
 		public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
 		{
             logger.LogError(exception, exception.Message);
+            logger.LogInformation(env.EnvironmentName);
             httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 

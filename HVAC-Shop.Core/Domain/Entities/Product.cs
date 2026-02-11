@@ -12,6 +12,6 @@
 		public int QuantityInStock { get; set; }
 		public string? PublicId { get; set; }
 
-        public List<BasketItem> Items { get; set; } = [];
+        public List<BasketItem?> Items { get; set; } = [];
     }
 }

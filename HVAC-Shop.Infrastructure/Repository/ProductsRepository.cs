@@ -1,5 +1,6 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
 using HVAC_Shop.Core.Domain.RepositoryContracts;
+using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Helpers;
 using Microsoft.EntityFrameworkCore;
 
