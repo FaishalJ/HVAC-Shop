@@ -11,7 +11,5 @@
         public required string Brand { get; set; }
         public int QuantityInStock { get; set; }
         public string? PublicId { get; set; }
-
-        public List<BasketItemDto> Items { get; set; } = [];
     }
 }

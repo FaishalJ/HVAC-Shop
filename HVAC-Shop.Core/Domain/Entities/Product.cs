@@ -1,8 +1,9 @@
-﻿namespace HVAC_Shop.Core.Domain.Entities
+﻿using HVAC_Shop.Core.Domain.Entities.Base;
+
+namespace HVAC_Shop.Core.Domain.Entities
 {
-	public class Product
-	{
-		public int Id { get; set; }
+	public class Product: EntityBase
+    {
 		public required string Name { get; set; }
 		public required string Description { get; set; }
 		public long Price { get; set; }

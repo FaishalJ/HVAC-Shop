@@ -1,8 +1,9 @@
-﻿namespace HVAC_Shop.Core.Domain.Entities
+﻿using HVAC_Shop.Core.Domain.Entities.Base;
+
+namespace HVAC_Shop.Core.Domain.Entities
 {
-    public class Basket
+    public class Basket : EntityBase
     {
-        public int Id { get; set; }
         public required string BasketId { get; set; }
         public List<BasketItem> Items { get; set; } = [];
         public string? PaymentIntentId { get; set; }

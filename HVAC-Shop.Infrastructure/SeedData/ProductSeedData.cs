@@ -1,6 +1,6 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
 
-namespace Infrastructure.seedData
+namespace Infrastructure.SeedData
 {
     public static class ProductSeedData
     {

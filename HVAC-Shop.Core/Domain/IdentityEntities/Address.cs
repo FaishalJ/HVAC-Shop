@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace HVAC_Shop.Core.Domain.Entities
+namespace HVAC_Shop.Core.Domain.IdentityEntities
 {
     public class Address
     {

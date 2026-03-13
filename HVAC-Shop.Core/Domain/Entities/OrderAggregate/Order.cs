@@ -1,8 +1,9 @@
-﻿namespace HVAC_Shop.Core.Domain.Entities.OrderAggregate
+﻿using HVAC_Shop.Core.Domain.Entities.Base;
+
+namespace HVAC_Shop.Core.Domain.Entities.OrderAggregate
 {
-    public class Order
+    public class Order : EntityBase
     {
-        public int Id { get; set; }
         public required string BuyerEmail { get; set; }
         public required ShippingAddress Address { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.UtcNow;

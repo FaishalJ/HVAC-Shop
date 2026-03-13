@@ -1,5 +1,5 @@
 ﻿using HVAC_Shop.Infrastructure;
-using Infrastructure.seedData;
+using Infrastructure.SeedData;
 using Microsoft.EntityFrameworkCore;
 
 namespace HVAC_Shop.StartUp

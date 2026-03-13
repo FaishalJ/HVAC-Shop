@@ -20,6 +20,7 @@ namespace HVAC_Shop.StartUp
 
             // Repositories.
 			builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+			builder.Services.AddScoped<IBasketRepository, BasketRepository>();
             
 			// Identity.
 			builder.Services.AddIdentityServices();

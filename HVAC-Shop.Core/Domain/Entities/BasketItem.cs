@@ -1,11 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using HVAC_Shop.Core.Domain.Entities.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HVAC_Shop.Core.Domain.Entities
 {
     [Table("BasketItems")]
-    public class BasketItem
+    public class BasketItem : EntityBase
     {
-        public int Id { get; set; }
         public int Quantity { get; set; }
 
         // Navigation property to the Basket

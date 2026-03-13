@@ -1,4 +1,4 @@
-﻿using HVAC_Shop.Core.Domain.Entities;
+﻿using HVAC_Shop.Core.Domain.IdentityEntities;
 using HVAC_Shop.Core.DTO;
 
 namespace HVAC_Shop.Core.Extensions

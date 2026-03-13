@@ -1,14 +1,13 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
+using HVAC_Shop.Core.Domain.RepositoryContracts;
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Extensions;
 using HVAC_Shop.Infrastructure;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HVAC_Shop.Controllers
 {
-    public class BasketController(AppDbContext context) : BaseController
+    public class BasketController(IBasketRepository basketRepository, IProductsRepository productsRepository, AppDbContext context) : BaseController
     {
         const string BasketSessionKey = "BasketId";
 
@@ -27,7 +26,8 @@ namespace HVAC_Shop.Controllers
             var basket = await RetriveBasket();
             basket ??= CreateBasket();
 
-            var product = await context.Products.FindAsync(productId);
+            //var product = await context.Products.FindAsync(productId);
+            var product = await productsRepository.GetProductAsync(productId);
             if (product == null) return BadRequest("Problem adding item to basket productId");
 
             basket.AddItem(product, quantity);
@@ -57,10 +57,12 @@ namespace HVAC_Shop.Controllers
         // Retrieves the current user's basket based on the BasketId stored in cookies
         private async Task<Basket?> RetriveBasket()
         {
-            var basket = await context.Baskets
-                .Include(b => b.Items)
-                .ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync(b => b.BasketId == Request.Cookies[BasketSessionKey]);
+            if (!Request.Cookies.TryGetValue(BasketSessionKey, out var basketId) || string.IsNullOrEmpty(basketId))
+            {
+                return null;
+            }
+
+            var basket = await basketRepository.RetriveBasketAsync(basketId);
 
             return basket;
         }

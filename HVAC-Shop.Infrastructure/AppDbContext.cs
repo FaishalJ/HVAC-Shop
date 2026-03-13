@@ -18,7 +18,7 @@ namespace HVAC_Shop.Infrastructure
 
             modelBuilder.Entity<BasketItem>()
                 .HasOne(bi => bi.Product)
-                .WithMany(p => p.Items)
+                .WithMany(p => p.Items!)
                 .HasForeignKey(bi => bi.ProductId);
 
             modelBuilder.Entity<BasketItem>()
