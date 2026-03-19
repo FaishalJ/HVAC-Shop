@@ -11,10 +11,9 @@ namespace HVAC_Shop.Core.Services
         {
             StripeConfiguration.ApiKey = options.Value.SecretKey;
 
-            long basketAmount = basket.Items.Sum(item => item.Product.Price * item.Quantity);
-            long deliveryFee = basketAmount > 10000 ? 0 : 500;
+            decimal basketAmount = basket.Items.Sum(item => item.Product.Price * item.Quantity);
+            decimal deliveryFee = basketAmount > 10000 ? 0 : 500;
             var totalAmount = basketAmount + deliveryFee;
-            //long discount = 0;
 
             var intent = new PaymentIntent();
             var service = new PaymentIntentService();
@@ -23,7 +22,7 @@ namespace HVAC_Shop.Core.Services
             {
                 var updateOptions = new PaymentIntentUpdateOptions
                 {
-                    Amount = totalAmount,
+                    Amount = (long)Math.Round(totalAmount),
                 };
 
                 intent = await service.UpdateAsync(basket.PaymentIntentId, updateOptions);
@@ -31,7 +30,7 @@ namespace HVAC_Shop.Core.Services
 
             var createOptions = new PaymentIntentCreateOptions
             {
-                Amount = basketAmount + deliveryFee,
+                Amount = (long)Math.Round(basketAmount + deliveryFee),
                 Currency = "usd"
             };
 

@@ -22,7 +22,6 @@ namespace HVAC_Shop.Core.Domain.Entities
 
             if (existingItem == null)
             {
-
                 Items.Add(new BasketItem
                 {
                     Product = product,
@@ -47,6 +46,7 @@ namespace HVAC_Shop.Core.Domain.Entities
             if (existingItem == null) return;
 
             existingItem.Quantity -= quantity;
+
             if (existingItem.Quantity <= 0)
             {
                 Items.Remove(existingItem);

@@ -1,6 +1,5 @@
 ﻿using HVAC_Shop.Core.Domain.IdentityEntities;
 using HVAC_Shop.Infrastructure;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
 namespace HVAC_Shop.StartUp

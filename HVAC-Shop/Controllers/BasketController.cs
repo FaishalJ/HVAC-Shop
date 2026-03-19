@@ -2,19 +2,28 @@
 using HVAC_Shop.Core.Domain.RepositoryContracts;
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Extensions;
-using HVAC_Shop.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HVAC_Shop.Controllers
 {
-    public class BasketController(IBasketRepository basketRepository, IProductsRepository productsRepository, AppDbContext context) : BaseController
+    public class BasketController : BaseController
     {
+        private readonly IBasketRepository _basketRepository;
+        private readonly IProductsRepository _productsRepository;
+
         const string BasketSessionKey = "BasketId";
+
+        public BasketController(IBasketRepository basketRepository, IProductsRepository productsRepository)
+        {
+            _basketRepository = basketRepository;
+            _productsRepository = productsRepository;
+        }
 
         [HttpGet]
         public async Task<ActionResult<BasketDto>> GetBasket()
         {
             var basket = await RetriveBasket();
+
             if (basket == null) return NoContent();
 
             return basket.ToBasketDto();
@@ -23,17 +32,15 @@ namespace HVAC_Shop.Controllers
         [HttpPost]
         public async Task<ActionResult> AddItemToBasket(int productId, int quantity)
         {
-            var basket = await RetriveBasket();
-            basket ??= CreateBasket();
+            var basket = await RetriveBasket() ?? await CreateBasket();
 
-            //var product = await context.Products.FindAsync(productId);
-            var product = await productsRepository.GetProductAsync(productId);
-            if (product == null) return BadRequest("Problem adding item to basket productId");
+            var product = await _productsRepository.GetProductAsync(productId);
+            if (product == null) return NotFound($"Product {productId} not found");
 
             basket.AddItem(product, quantity);
-            var result = await context.SaveChangesAsync() > 0;
+            var isSuccess = await _basketRepository.SaveChangesAsync();
 
-            if (result) return CreatedAtAction(nameof(GetBasket), basket.ToBasketDto());
+            if (isSuccess) return CreatedAtAction(nameof(GetBasket), basket.ToBasketDto());
 
             return BadRequest("Problem adding item to basket");
         }
@@ -43,15 +50,16 @@ namespace HVAC_Shop.Controllers
         {
             var basket = await RetriveBasket();
 
-            if (basket == null) return BadRequest("Problem deleting item basket not found");
+            if (basket == null) return NotFound("Basket not found");
+
 
             basket.RemoveItem(productId, quantity);
 
-            var result = await context.SaveChangesAsync() > 0;
+            var isSuccess = await _basketRepository.SaveChangesAsync();
 
-            if (result) return NoContent();
+            if (isSuccess) return NoContent();
 
-            return BadRequest("Problem adding item to basket");
+            return BadRequest("Problem deleting item from basket");
         }
 
         // Retrieves the current user's basket based on the BasketId stored in cookies
@@ -62,18 +70,18 @@ namespace HVAC_Shop.Controllers
                 return null;
             }
 
-            var basket = await basketRepository.RetriveBasketAsync(basketId);
+            var basket = await _basketRepository.GetBasketAsync(basketId);
 
             return basket;
         }
 
         // Create Basket and add to cookie
-        private Basket CreateBasket()
+        private async Task<Basket> CreateBasket()
         {
             var cookieOptions = new CookieOptions
             {
                 IsEssential = true,
-                Expires = DateTime.UtcNow.AddDays(30)
+                MaxAge = TimeSpan.FromDays(30),
             };
 
             var basket = new Basket
@@ -81,7 +89,8 @@ namespace HVAC_Shop.Controllers
                 BasketId = Guid.NewGuid().ToString()
             };
 
-            context.Baskets.Add(basket);
+            await _basketRepository.CreateBasketAsync(basket);
+
             Response.Cookies.Append(BasketSessionKey, basket.BasketId, cookieOptions);
 
             return basket;

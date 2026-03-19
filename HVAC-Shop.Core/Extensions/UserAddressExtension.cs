@@ -5,19 +5,22 @@ namespace HVAC_Shop.Core.Extensions
 {
     public static class UserAddressExtension
     {
-        public static UserAddressDto ToDto(this Address address)
+        extension(Address address)
         {
-            return new UserAddressDto
+            public UserAddressDto ToDto()
             {
-                Id = address.Id,
-                Name = address.Name,
-                City = address.City,
-                Country = address.Country,
-                Line1 = address.Line1,
-                Line2 = address.Line2,
-                State = address.State,
-                PostalCode = address.PostalCode
-            };
+                return new UserAddressDto
+                {
+                    Id = address.Id,
+                    Name = address.Name,
+                    City = address.City,
+                    Country = address.Country,
+                    Line1 = address.Line1,
+                    Line2 = address.Line2,
+                    State = address.State,
+                    PostalCode = address.PostalCode
+                };
+            }
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
 using HVAC_Shop.Core.Domain.Entities.OrderAggregate;
+using HVAC_Shop.Core.Domain.RepositoryContracts;
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Extensions;
-using HVAC_Shop.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,15 +10,21 @@ using Microsoft.EntityFrameworkCore;
 namespace HVAC_Shop.Controllers
 {
     [Authorize]
-    public class OrderController(AppDbContext context) : BaseController
+    public class OrderController : BaseController
     {
+        private readonly IOrderRepository _orderRepository;
+        private readonly IBasketRepository _basketRepository;
+
+        public OrderController(IOrderRepository orderRepository, IBasketRepository basketRepository)
+        {
+            _orderRepository = orderRepository;
+            _basketRepository = basketRepository;
+        }
+
         [HttpGet]
         public async Task<ActionResult> GetAllOrders()
         {
-            var orders = await context.Orders.Select(o=>o.ToOrderDto()).ToListAsync();
-
-            //var orders = await context.Orders.Select(o => o.ToOrderDto())
-            //    .Include(x => x.OrderItem).ToListAsync();
+            var orders = await _orderRepository.GetAllOrdersAsync();
 
             return Ok(orders);
         }
@@ -26,14 +32,8 @@ namespace HVAC_Shop.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult> GetOrder(int id)
         {
-            //var orders = await context.Orders
-            //    .Include(x => x.OrderItem)
-            //    .Where(x => x.BuyerEmail == User.GetName() && (x.Id == id))
-            //    .FirstOrDefaultAsync();
-
-            var order = await context.Orders.Select(o => o.ToOrderDto())
-                .Where(x => x.BuyerEmail == User.GetName() && (x.Id == id))
-                .FirstOrDefaultAsync();
+            var order = await _orderRepository.GetOrderAsync(id, User.GetName());
+            if (order == null) return NotFound();
 
             return Ok(order);
         }
@@ -41,10 +41,10 @@ namespace HVAC_Shop.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateOrder(CreateOrderDto orderDto)
         {
-            var basket = await context.Baskets
-                .Include(x => x.Items)
-                .ThenInclude(x => x.Product)
-                .FirstOrDefaultAsync(x => x.BasketId == Request.Cookies["BasketId"]);
+            var basketCookie = Request.Cookies["BasketId"];
+            if (string.IsNullOrWhiteSpace(basketCookie))
+                return BadRequest("Problem retrieving basket");
+            var basket = await _basketRepository.GetBasketAsync(basketCookie);
 
             if (basket == null || basket.Items.Count == 0 || string.IsNullOrEmpty(basket.PaymentIntentId))
             {
@@ -71,12 +71,16 @@ namespace HVAC_Shop.Controllers
                 PaymentSummary = orderDto.PaymentSummary,
                 PaymentIntentId = basket.PaymentIntentId
             };
-            context.Orders.Add(order);
-            context.Baskets.Remove(basket);
-            var result = await context.SaveChangesAsync() > 0;
 
+            await _orderRepository.AddOrderAsync(order);
+
+            await _basketRepository.RemoveBasketAsync(basket);
+
+            var result = await _basketRepository.SaveChangesAsync();
             return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order.ToOrderDto());
         }
+
+
 
         private static List<OrderItem>? GetItems(List<BasketItem> items)
         {

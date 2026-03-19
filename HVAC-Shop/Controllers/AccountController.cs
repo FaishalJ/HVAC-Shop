@@ -1,5 +1,4 @@
-﻿using HVAC_Shop.Core.Domain.Entities;
-using HVAC_Shop.Core.Domain.IdentityEntities;
+﻿using HVAC_Shop.Core.Domain.IdentityEntities;
 using HVAC_Shop.Core.DTO;
 using HVAC_Shop.Core.Enum;
 using HVAC_Shop.Core.Extensions;

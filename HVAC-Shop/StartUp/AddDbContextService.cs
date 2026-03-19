@@ -17,11 +17,11 @@ namespace HVAC_Shop.StartUp
                     // Seed Products
                     if (!dbContext.Products.Any())
                     {
-                        dbContext.Products.AddRange(ProductSeedData.GetProducts());
+                        dbContext.Products.AddRange(InitialSeedData.GetProducts());
                         await dbContext.SaveChangesAsync(cancellationToken);
                     }
-
-                }));
+                })
+            );
         }
     }
 }

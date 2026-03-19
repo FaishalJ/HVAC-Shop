@@ -6,6 +6,6 @@ namespace HVAC_Shop.Core.Domain.Entities.OrderAggregate
     {
         public required OrderedProductItem OrderedProduct { get; set; }
         public int Quantity { get; set; }
-        public long Price { get; set; }
+        public decimal Price { get; set; }
     }
 }

@@ -11,7 +11,9 @@ namespace HVAC_Shop.StartUp
 	{
 		public static void AddApplicationServices(this WebApplicationBuilder builder)
 		{
-			builder.Services.AddDatabaseServices(builder.Configuration);
+            builder.Services.AddControllers();
+
+            builder.Services.AddDatabaseServices(builder.Configuration);
 			builder.Services.AddCorsServices();
 
 			// Exception.
@@ -21,6 +23,7 @@ namespace HVAC_Shop.StartUp
             // Repositories.
 			builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
 			builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+			builder.Services.AddScoped<IOrderRepository, OrdersRepository>();
             
 			// Identity.
 			builder.Services.AddIdentityServices();

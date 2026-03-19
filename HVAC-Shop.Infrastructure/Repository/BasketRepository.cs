@@ -4,26 +4,48 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HVAC_Shop.Infrastructure.Repository
 {
-    public class BasketRepository(AppDbContext context) : IBasketRepository
+    public class BasketRepository : IBasketRepository
     {
-        public async Task<bool> AddItemsToBasketAsync(Product product, int quantity, string basketId)
+        private readonly AppDbContext _context;
+
+        public BasketRepository(AppDbContext context)
         {
-            var basket = await RetriveBasketAsync(basketId);
-            basket?.AddItem(product, quantity);
-
-            var result = await context.SaveChangesAsync() > 0;
-
-            return result;
+            _context = context;
         }
 
-        public async Task<Basket?> RetriveBasketAsync(string basketId)
+        public async Task<Basket?> GetBasketAsync(string basketId)
         {
-            var basket = await context.Baskets
+            var query = _context.Baskets
                 .Include(b => b.Items)
-                .ThenInclude(i => i.Product)
-                .FirstOrDefaultAsync(b => b.BasketId == basketId);
+                .ThenInclude(i => i.Product);
 
-            return basket;
+            return await query.FirstOrDefaultAsync(b => b.BasketId == basketId);
+        }
+
+        public async Task CreateBasketAsync(Basket basket)
+        {
+            await _context.Baskets.AddAsync(basket);
+        }
+
+        //public async Task UpdateBasketAsync(Basket basket)
+        //{
+        //    _context.Baskets.Update(basket);
+        //    await Task.CompletedTask;
+        //}
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task RemoveBasketAsync(Basket basket)
+        {
+            var existingasket = await _context.Baskets.FirstOrDefaultAsync(b => b.Id == basket.Id);
+
+            if (existingasket != null)
+            {
+                _context.Baskets.Remove(existingasket);
+            }
         }
     }
 }
