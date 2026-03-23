@@ -44,6 +44,7 @@ namespace HVAC_Shop.Controllers
             var basketCookie = Request.Cookies["BasketId"];
             if (string.IsNullOrWhiteSpace(basketCookie))
                 return BadRequest("Problem retrieving basket");
+
             var basket = await _basketRepository.GetBasketAsync(basketCookie);
 
             if (basket == null || basket.Items.Count == 0 || string.IsNullOrEmpty(basket.PaymentIntentId))
@@ -61,26 +62,34 @@ namespace HVAC_Shop.Controllers
             var subtotal = orderItems.Sum(item => item.Price * item.Quantity);
             long deliveryFee = subtotal > 10000 ? 0 : 500;
 
-            var order = new Order
+            var order = await _orderRepository.GetOrderAsync(order => order.PaymentIntentId == basket.PaymentIntentId);
+
+            if (order == null)
             {
-                BuyerEmail = User.GetName(),
-                Address = orderDto.Address,
-                OrderItem = orderItems,
-                Subtotal = subtotal,
-                DeliveryFee = deliveryFee,
-                PaymentSummary = orderDto.PaymentSummary,
-                PaymentIntentId = basket.PaymentIntentId
-            };
 
-            await _orderRepository.AddOrderAsync(order);
+                order = new Order
+                {
+                    BuyerEmail = User.GetName(),
+                    Address = orderDto.Address,
+                    OrderItem = orderItems,
+                    Subtotal = subtotal,
+                    DeliveryFee = deliveryFee,
+                    PaymentSummary = orderDto.PaymentSummary,
+                    PaymentIntentId = basket.PaymentIntentId
+                };
+                await _orderRepository.AddOrderAsync(order);
+            }
+            else
+            {
+                order.OrderItem = orderItems;
+            }
 
-            await _basketRepository.RemoveBasketAsync(basket);
 
-            var result = await _basketRepository.SaveChangesAsync();
+            //await _basketRepository.RemoveBasketAsync(basket);
+            //var result = await _basketRepository.SaveChangesAsync();
+
             return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order.ToOrderDto());
         }
-
-
 
         private static List<OrderItem>? GetItems(List<BasketItem> items)
         {

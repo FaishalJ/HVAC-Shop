@@ -7,6 +7,7 @@
         Processing,
         Failed,
         Delivered,
-        Cancelled
+        Cancelled,
+        PaymentMisMatch
     }
 }

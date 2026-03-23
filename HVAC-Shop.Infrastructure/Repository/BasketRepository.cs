@@ -1,6 +1,7 @@
 ﻿using HVAC_Shop.Core.Domain.Entities;
 using HVAC_Shop.Core.Domain.RepositoryContracts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace HVAC_Shop.Infrastructure.Repository
 {
@@ -20,6 +21,15 @@ namespace HVAC_Shop.Infrastructure.Repository
                 .ThenInclude(i => i.Product);
 
             return await query.FirstOrDefaultAsync(b => b.BasketId == basketId);
+        }
+
+        public async Task<Basket?> GetBasketAsync(Expression<Func<Basket, bool>> predicate)
+        {
+            var query = _context.Baskets
+                .Include(b => b.Items)
+                .ThenInclude(i => i.Product);
+
+            return await query.FirstOrDefaultAsync(predicate);
         }
 
         public async Task CreateBasketAsync(Basket basket)
