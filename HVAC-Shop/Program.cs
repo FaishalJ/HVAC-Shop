@@ -23,7 +23,6 @@ if (app.Environment.IsDevelopment())
     {
         opt.HideClientButton = true;
     }).AllowAnonymous();
-
 }
 
 //app.UseHttpsRedirection();
