@@ -1,4 +1,5 @@
 ﻿using HVAC_Shop.Core.Domain.Entities.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace HVAC_Shop.Core.Domain.Entities.OrderAggregate
 {
@@ -6,6 +7,7 @@ namespace HVAC_Shop.Core.Domain.Entities.OrderAggregate
     {
         public required OrderedProductItem OrderedProduct { get; set; }
         public int Quantity { get; set; }
-        public decimal Price { get; set; }
+		[Precision(10, 2)]
+		public decimal Price { get; set; }
     }
 }
